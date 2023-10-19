@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cotação do Dólar</title>
+</head>
+<body>
+    <h1>Cotação do Dólar</h1>
+    <p type="number" id="dolar">{{ valor_cotacao }}</p>
+
+    <form action="#" method="post">
+        <label for="amount">Insira o valor em reais (BRL):</label>
+        <input type="text" id="amount" name="amount">
+        <input type="button" value="Calcular" onclick="calcularCambio()">
+    </form>
+    <p id="result">Resultado: Aguarde a cotação...</p>
+
+    <script>
+        function calcularCambio() {
+            var amount = parseFloat(document.getElementById('amount').value);
+
+            if (isNaN(amount)) {
+                alert('Por favor, insira um valor numérico válido.');
+                return; // Sai da função se a entrada não for um número válido
+            }
+            
+            // Busque o valor da cotação usando AJAX
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/get_cambio', true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    var exchangeRate = parseFloat(response.valor_cotacao);
+                    var result = amount * exchangeRate;
+                    var resultElement = document.getElementById('result');
+                    resultElement.textContent = 'Resultado: ' + result.toFixed(2);
+                }
+            };
+
+            xhr.send();
+        }
+    </script>
+</body>
+</html>
